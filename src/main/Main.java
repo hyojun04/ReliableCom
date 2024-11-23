@@ -131,6 +131,13 @@ public class Main {
 	}
 
 	public static void ComReceive() {
+		receiver_udp = new UDPReceive(GUI.receivedMessagesArea);  // receivedMessagesArea 전달
+        new Thread(() -> receiver_udp.startServer()).start();
+        GUI.consoleArea.append("UDP 수신 대기 중...\n");
+        //UDP Broad메시지를 수신하였지 체크하는 스레드 생성 
+        StartUDPCheckThread udpCheckThread = new StartUDPCheckThread(receiver_udp,tcp_connection);
+        Thread udpCheck = new Thread(udpCheckThread);
+        udpCheck.start();
 	}
 
 }
