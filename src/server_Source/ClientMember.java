@@ -46,4 +46,3 @@ public class ClientMember {
         this.connected = connected;
     }
 }
-

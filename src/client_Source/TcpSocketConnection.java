@@ -18,9 +18,7 @@ public class TcpSocketConnection {
             
             System.out.println("Server: " + serverIP + " is connected by TCP");
             System.out.println("My IP: " + socket.getLocalAddress());
-            
-            
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -31,7 +29,7 @@ public class TcpSocketConnection {
         if (client != null) {
             client.sendMessage_tcp(message); // Client_Tcp을 사용하여 메시지 전송
         } else {
-            System.out.println("SenderViewModel이 초기화되지 않았습니다.");
+        	System.out.println("TCPSender is null");
         }
     }
     //byte배열의 TCP check 메시지를 전송하는 메서드
@@ -39,7 +37,7 @@ public class TcpSocketConnection {
         if (client != null) {
             client.sendMessage_tcp(message); // Client_Tcp을 사용하여 메시지 전송
         } else {
-            System.out.println("SenderViewModel이 초기화되지 않았습니다.");
+        	System.out.println("TCPSender is null");
         }
     }
     
@@ -48,9 +46,17 @@ public class TcpSocketConnection {
         if (client != null) {
             client.sendMessage_tcp_alltrue(message); // Client_Tcp을 사용하여 메시지 전송
         } else {
-            System.out.println("SenderViewModel이 초기화되지 않았습니다.");
+        	System.out.println("TCPSender is null");
         }
     }
+    public void sendAckObject(byte[] byteArray) {
+    	if (client != null) {
+            client.sendAckObject(byteArray);
+        } else {
+            System.out.println("TCPSender is null");
+        }
+    }
+    
     
     
     // 소켓 종료 메서드 추가
