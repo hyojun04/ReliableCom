@@ -10,139 +10,138 @@ import java.util.Timer;
 
 import java.util.TimerTask;
 
+import javax.swing.JLabel;
+
 
 
 
 
 public class Main {
-	/*Server*/
-	public static ClientManager clientManager = new ClientManager();
-	public static int clients_tcp_index = 0; // ¿¡ÄÚ¸Ş½ÃÁöÀÇ ¹è¿­ÀÇ ÀÎµ¦½º
-	
+   /*Server*/
+   public static TcpConnectionManager tcpconnectionManager = new TcpConnectionManager();
+   public static int clients_tcp_index = 0; // ì—ì½”ë©”ì‹œì§€ì˜ ë°°ì—´ì˜ ì¸ë±ìŠ¤
+   
     private static UDPBroadcastSend sender_udp;
     private static TcpConnectionAccepter tcp_accepter;
-    private static Timer udpTimer_IP; //SETUP °úÁ¤À» À§ÇÑ UDP broadcast¸¦ À§ÇÑ Å¸ÀÌ¸Ó
-    private static Thread senderThread;// UDP Àü¼ÛÀ» À§ÇÑ Å¸ÀÌ¸Ó
+    private static Timer udpTimer_IP; //SETUP ê³¼ì •ì„ ìœ„í•œ UDP broadcastë¥¼ ìœ„í•œ íƒ€ì´ë¨¸
+    private static Thread senderThread;// UDP ì „ì†¡ì„ ìœ„í•œ íƒ€ì´ë¨¸
     private static Thread accepterThread;
-    public static int SIZE = 61440;
+    private static int SIZE = 61440;
     /*Client*/
     public static UDPReceive receiver_udp;
     private static TcpSocketConnection tcp_connection;
+    private static JLabel imageLabel; // ì´ë¯¸ì§€ í‘œì‹œìš© JLabel
     
-	private Main() {
-		
-	}
-	
-	
-	public static void ComSetup () {
-		//¼öÁ¤ÇÑ ÀÌÀ¯: º´·Ä½º·¹µåÃ³¸®·Î ÇÏÁö¾ÊÀ¸¸é socket.acceptÇÏ´Â ºÎºĞ¿¡¼­ ¸ØÃß°Ô µÈ´Ù.
-    	if (tcp_accepter == null) {
-    		tcp_accepter = new TcpConnectionAccepter();
-    		accepterThread = new Thread(tcp_accepter);
-   		 	accepterThread.start();
+   private Main() {
+      
+   }
+   
+   
+   public static void ComSetup () {
+      //ìˆ˜ì •í•œ ì´ìœ : ë³‘ë ¬ìŠ¤ë ˆë“œì²˜ë¦¬ë¡œ í•˜ì§€ì•Šìœ¼ë©´ socket.acceptí•˜ëŠ” ë¶€ë¶„ì—ì„œ ë©ˆì¶”ê²Œ ëœë‹¤.
+       if (tcp_accepter == null) {
+          tcp_accepter = new TcpConnectionAccepter(GUI.receivedMessagesArea,GUI.consoleArea);
+          accepterThread = new Thread(tcp_accepter);
+             accepterThread.start();
             GUI.consoleArea.append("TCP Connection Accepter thread started.\n");
-    	}
-    	else {
-    		GUI.consoleArea.append("TCP Connection Accepter thread already running.\n");
-    	}
+       }
+       else {
+          GUI.consoleArea.append("TCP Connection Accepter thread already running.\n");
+       }
         
         String broadIP = GUI.inputIp_udpBroad.getText();
         
-        
-        //TCP ¼ÒÄÏÀ» ¿­°í, UDP Broad Àü¼Û, stopUDPsend ¹öÆ° ´©¸£¸é ¼Û½Å ÁßÁö -> ÃßÈÄ ¿¬°áµÇ¸é ¸ØÃßµµ·ÏÇÏ´Â ¸ÅÄ¿´ÏÁòÀ¸·Î º¯°æ
-        /*
+        //TCP ì†Œì¼“ì„ ì—´ê³ , UDP Broad ì „ì†¡, stopUDPsend ë²„íŠ¼ ëˆ„ë¥´ë©´ ì†¡ì‹  ì¤‘ì§€ -> ì¶”í›„ ì—°ê²°ë˜ë©´ ë©ˆì¶”ë„ë¡í•˜ëŠ” ë§¤ì»¤ë‹ˆì¦˜ìœ¼ë¡œ ë³€ê²½
         UDPBeaconbroadcast sender_udp_ip = new UDPBeaconbroadcast();
         udpTimer_IP = new Timer();
         udpTimer_IP.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-            	sender_udp_ip.startSend(broadIP);
+               sender_udp_ip.startSend(broadIP);
             }
-        }, 0, 500); // 500ms °£°İÀ¸·Î ½ÇÇà
+        }, 0, 500); // 500ms ê°„ê²©ìœ¼ë¡œ ì‹¤í–‰
 
         
         GUI.consoleArea.append("Connection Setup Ready \n");
-        */
-	}
-	
-	
-	public static void StopSetup() {
-		if (udpTimer_IP != null) {
-            udpTimer_IP.cancel();  // Å¸ÀÌ¸Ó ÁßÁö
-            udpTimer_IP = null;    // Å¸ÀÌ¸Ó °´Ã¼¸¦ null·Î ¼³Á¤ÇÏ¿© »óÅÂ ÃÊ±âÈ­
-            GUI.consoleArea.append("SETUPÀÌ ÁßÁöµÇ¾ú½À´Ï´Ù.\n");
+   }
+   
+   
+   public static void StopSetup() {
+      if (udpTimer_IP != null) {
+            udpTimer_IP.cancel();  // íƒ€ì´ë¨¸ ì¤‘ì§€
+            udpTimer_IP = null;    // íƒ€ì´ë¨¸ ê°ì²´ë¥¼ nullë¡œ ì„¤ì •í•˜ì—¬ ìƒíƒœ ì´ˆê¸°í™”
+            GUI.consoleArea.append("SETUPì´ ì¤‘ì§€ë˜ì—ˆìŠµë‹ˆë‹¤.\n");
         }
-	}
+   }
 
-	public static void ComBroadcastSend () {
-		//byte[] Data,int Size,int Option ÃßÈÄ ¾÷µ¥ÀÌÆ®
+   public static void ComBroadcastSend () {
+      //byte[] Data,int Size,int Option ì¶”í›„ ì—…ë°ì´íŠ¸
         
         String serverIP = GUI.inputIp_udpBroad.getText();
         if(sender_udp == null && senderThread == null) {
-        	sender_udp = new UDPBroadcastSend(serverIP);
-            //sender_udp ½º·¹µåÈ­
+           sender_udp = new UDPBroadcastSend(serverIP,GUI.sendMessageArea,GUI.consoleArea,SIZE);
+            //sender_udp ìŠ¤ë ˆë“œí™”
             senderThread = new Thread(sender_udp);
             senderThread.start();
         }
         else {
-        	GUI.consoleArea.append("UDP ¸Ş½ÃÁö ÀÌ¹Ì ¼Û½Å Áß..\n");
+           GUI.consoleArea.append("UDP ë©”ì‹œì§€ ì´ë¯¸ ì†¡ì‹  ì¤‘..\n");
         }
         
         
-	} 
-	public static void StopBroadcastSend() {
-		if (sender_udp != null) {
-        	senderThread.interrupt();  // Å¸ÀÌ¸Ó ÁßÁö
-            senderThread = null;    // Å¸ÀÌ¸Ó °´Ã¼¸¦ null·Î ¼³Á¤ÇÏ¿© »óÅÂ ÃÊ±âÈ­
+   } 
+   public static void StopBroadcastSend() {
+      if (sender_udp != null) {
+           senderThread.interrupt();  // íƒ€ì´ë¨¸ ì¤‘ì§€
+            senderThread = null;    // íƒ€ì´ë¨¸ ê°ì²´ë¥¼ nullë¡œ ì„¤ì •í•˜ì—¬ ìƒíƒœ ì´ˆê¸°í™”
             sender_udp = null;
-            GUI.consoleArea.append("UDP ¸Ş½ÃÁö Àü¼ÛÀÌ ÁßÁöµÇ¾ú½À´Ï´Ù.\n");
+            GUI.consoleArea.append("UDP ë©”ì‹œì§€ ì „ì†¡ì´ ì¤‘ì§€ë˜ì—ˆìŠµë‹ˆë‹¤.\n");
         }
-	}
+   }
 
-	public static void ComReset() {
-		//Client List¿¡¼­ ¸ğµç  Client °´Ã¼ »èÁ¦
-    	//System.out.println("Reset Program completed 1");
-    	if (tcp_accepter != null) {
-    		tcp_accepter.closeTcpSocket();
+   public static void ComReset() {
+      //Client Listì—ì„œ ëª¨ë“   Client ê°ì²´ ì‚­ì œ
+       //System.out.println("Reset Program completed 1");
+       if (tcp_accepter != null) {
+          tcp_accepter.closeTcpSocket();
             accepterThread.interrupt();
-          //tcp_accepter null·Î ÃÊ±âÈ­ ÈÄ ¸ğµç ¸Ş¼¼Áö Ã¢ ÃÊ±âÈ­
+          //tcp_accepter nullë¡œ ì´ˆê¸°í™” í›„ ëª¨ë“  ë©”ì„¸ì§€ ì°½ ì´ˆê¸°í™”
             tcp_accepter = null;
-    	}
-    	
+       }
+       
         //System.out.println("Reset Program completed 2");
         GUI.consoleArea.setText("Reset Program");
         GUI.receivedMessagesArea.setText("");
         GUI.sendMessageArea.setText("");
-        //Client ÃÊ±âÈ­
-        clientManager.AllClientsReset();
+        //Client ì´ˆê¸°í™”
+        tcpconnectionManager.AllClientsReset();
         clients_tcp_index = 0;
         System.out.println("TcpConnectionAccepter sets null");
-        //Udp sender ÃÊ±âÈ­
-        UDPBroadcastSend.resetCount();
+        //Udp sender ì´ˆê¸°í™”
         if(senderThread != null&& sender_udp != null) {
-        	senderThread = null;
+           senderThread = null;
             sender_udp = null;
         }
-        
-	}
-	
-	/*   The methods are necessary by client */
-	public static void ComSetupResponse () {
-		tcp_connection = new TcpSocketConnection();
-        receiver_udp = new UDPReceive();
+   }
+   
+   /*   The methods are necessary by client */
+   public static void ComSetupResponse () {
+      tcp_connection = new TcpSocketConnection();
+        receiver_udp = new UDPReceive(GUI.receivedMessagesArea);
+        imageLabel = GUI.imageLabel;
         String serverIP = receiver_udp.startConnect_to_tcp();
         tcp_connection.startClient(serverIP);
-        GUI.consoleArea.append("Client: "+serverIP+"°¡ TCP ¼ÒÄÏ°ú ¿¬°áµÇ¾ú½À´Ï´Ù. \n");
-	}
+        GUI.consoleArea.append("Client: "+serverIP+"ê°€ TCP ì†Œì¼“ê³¼ ì—°ê²°ë˜ì—ˆìŠµë‹ˆë‹¤. \n");
+   }
 
-	public static void ComReceive() {
-		receiver_udp = new UDPReceive();
+   public static void ComReceive() {
+      receiver_udp = new UDPReceive(GUI.receivedMessagesArea);  // receivedMessagesArea ì „ë‹¬
         new Thread(() -> receiver_udp.startServer()).start();
-        GUI.consoleArea.append("UDP ¼ö½Å ´ë±â Áß...\n");
-        //UDP Broad¸Ş½ÃÁö¸¦ ¼ö½ÅÇÏ¿´Áö Ã¼Å©ÇÏ´Â ½º·¹µå »ı¼º 
-        UDPCheckThread udpCheckThread = new UDPCheckThread(receiver_udp,tcp_connection);
+        GUI.consoleArea.append("UDP ìˆ˜ì‹  ëŒ€ê¸° ì¤‘...\n");
+        //UDP Broadë©”ì‹œì§€ë¥¼ ìˆ˜ì‹ í•˜ì˜€ì§€ ì²´í¬í•˜ëŠ” ìŠ¤ë ˆë“œ ìƒì„± 
+        StartUDPCheckThread udpCheckThread = new StartUDPCheckThread(receiver_udp,tcp_connection,imageLabel);
         Thread udpCheck = new Thread(udpCheckThread);
         udpCheck.start();
-	}
+   }
 
 }
