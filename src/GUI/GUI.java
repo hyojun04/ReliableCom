@@ -31,6 +31,8 @@ public class GUI extends JFrame {
     private JButton clearSendButton;
     private JButton stopSetup_Button;
     private JButton resetProgram;
+    public static JLabel imageLabel; // ì´ë¯¸ì§€ í‘œì‹œìš© JLabel
+
     
     
     
@@ -44,14 +46,14 @@ public class GUI extends JFrame {
     
     public GUI() {
 
-    	
-        // GUI ±âº» ¼³Á¤
+       
+        // GUI ê¸°ë³¸ ì„¤ì •
         setTitle("Reliable Com");
-        setSize(1300, 600); // Å©±â¸¦ Á¶±İ ´õ ´Ã·ÁÁÜ
+        setSize(1300, 600); // í¬ê¸°ë¥¼ ì¡°ê¸ˆ ë” ëŠ˜ë ¤ì¤Œ
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // ¼ö½Å ¸Ş½ÃÁö ¿µ¿ª (¸Ç À§¿¡ À§Ä¡)
+        // ìˆ˜ì‹  ë©”ì‹œì§€ ì˜ì—­ (ë§¨ ìœ„ì— ìœ„ì¹˜)
         receivedMessagesArea = new JTextArea();
         receivedMessagesArea.setEditable(false);
         receivedMessagesArea.setLineWrap(true);
@@ -59,39 +61,39 @@ public class GUI extends JFrame {
         JScrollPane receivedScrollPane = new JScrollPane(receivedMessagesArea);
         receivedScrollPane.setBorder(BorderFactory.createTitledBorder("Received Messages"));
 
-        // Clear ¹öÆ° Ãß°¡ (¼ö½Å ¸Ş½ÃÁö)
+        // Clear ë²„íŠ¼ ì¶”ê°€ (ìˆ˜ì‹  ë©”ì‹œì§€)
         clearReceiveButton = new JButton("Clear Received Messages");
         clearReceiveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                receivedMessagesArea.setText(""); // ¼ö½Å ¸Ş½ÃÁö Ã¢ÀÇ ÅØ½ºÆ® ÃÊ±âÈ­
+                receivedMessagesArea.setText(""); // ìˆ˜ì‹  ë©”ì‹œì§€ ì°½ì˜ í…ìŠ¤íŠ¸ ì´ˆê¸°í™”
                 //edit
-                UDPReceive.reset_message_num(); // ¼ö½Å ¸Ş½ÃÁö Ä«¿îÅÍ ÃÊ±âÈ­
+                UDPReceive.reset_message_num(); // ìˆ˜ì‹  ë©”ì‹œì§€ ì¹´ìš´í„° ì´ˆê¸°í™”
                 
             }
         });
 
-        // Àü¼Û ¸Ş½ÃÁö ÀÔ·Â ¿µ¿ª (Áß°£¿¡ À§Ä¡)
+        // ì „ì†¡ ë©”ì‹œì§€ ì…ë ¥ ì˜ì—­ (ì¤‘ê°„ì— ìœ„ì¹˜)
         sendMessageArea = new JTextArea();
         sendMessageArea.setLineWrap(true);
         sendMessageArea.setWrapStyleWord(true);
         JScrollPane sendScrollPane = new JScrollPane(sendMessageArea);
         sendScrollPane.setBorder(BorderFactory.createTitledBorder("Send Message"));
 
-        // Clear ¹öÆ° Ãß°¡ (Àü¼Û ¸Ş½ÃÁö)
+        // Clear ë²„íŠ¼ ì¶”ê°€ (ì „ì†¡ ë©”ì‹œì§€)
         clearSendButton = new JButton("Clear Send Messages");
         clearSendButton.addActionListener(new ActionListener() {
             @Override
             
             //edit
             public void actionPerformed(ActionEvent e) {
-                sendMessageArea.setText(""); // Àü¼Û ¸Ş½ÃÁö Ã¢ÀÇ ÅØ½ºÆ® ÃÊ±âÈ­
+                sendMessageArea.setText(""); // ì „ì†¡ ë©”ì‹œì§€ ì°½ì˜ í…ìŠ¤íŠ¸ ì´ˆê¸°í™”
                 //edit
                 UDPBroadcastSend.resetCount();
             }
         });
 
-        // ÄÜ¼Ö ¿µ¿ª (¸Ç ¾Æ·¡¿¡ À§Ä¡)
+        // ì½˜ì†” ì˜ì—­ (ë§¨ ì•„ë˜ì— ìœ„ì¹˜)
         consoleArea = new JTextArea();
         consoleArea.setEditable(false);
         consoleArea.setLineWrap(true);
@@ -99,7 +101,12 @@ public class GUI extends JFrame {
         JScrollPane consoleScrollPane = new JScrollPane(consoleArea);
         consoleScrollPane.setBorder(BorderFactory.createTitledBorder("Console"));
 
-        // ¹öÆ° »ı¼º
+        // ì´ë¯¸ì§€ë¥¼ í‘œì‹œí•  JLabel ì´ˆê¸°í™”
+        imageLabel = new JLabel();
+        imageLabel.setHorizontalAlignment(JLabel.CENTER); // ì´ë¯¸ì§€ ê°€ìš´ë° ì •ë ¬
+        imageLabel.setBorder(BorderFactory.createTitledBorder("Received Image"));
+        
+        // ë²„íŠ¼ ìƒì„±
         connection_Button = new JButton("Connection");
         sendButton_UDP = new JButton("Send UDP Message");
         connectionSetup_Button = new JButton("Connection Setup");
@@ -108,21 +115,22 @@ public class GUI extends JFrame {
         stopSetup_Button = new JButton("Stop Connection Setup");
         resetProgram = new JButton("Reset Program");
         
-        // TCP ¼ÒÄÏÀÇ IP ÀÔ·Â ÇÊµå
+        // TCP ì†Œì¼“ì˜ IP ì…ë ¥ í•„ë“œ
         inputIp = new JTextField("192.168.0.228", 15);
-        //ÀÚµ¿À¸·Î WifiBroadAddress¸¦ Ã£´Â Å¬·¡½º ½ÇÇà
+        //ìë™ìœ¼ë¡œ WifiBroadAddressë¥¼ ì°¾ëŠ” í´ë˜ìŠ¤ ì‹¤í–‰
         //edit
-      		InetAddress BroadcastAddress = BroadcastAddressFinder.getWiFiBroadcastAddress();
-      		if (BroadcastAddress != null) {
-      			String BroadIP = BroadcastAddress.getHostAddress();
-      			System.out.println("Found IP: "+ BroadIP);
-      			inputIp_udpBroad = new JTextField(BroadIP,15);//ÇÁ·Î±×·¥ÀÌ ½ÇÇàµÇÀÚ¸»ÀÚ IP¸¦ ÀĞ¾îµé¿© Broadcast ÁÖ¼Ò¸¦ ÀÔ·ÂÇØµĞ´Ù.
-      			
-      		}
+        
+            InetAddress BroadcastAddress = BroadcastAddressFinder.getWiFiBroadcastAddress();
+            if (BroadcastAddress != null) {
+               String BroadIP = BroadcastAddress.getHostAddress();
+               System.out.println("Found IP: "+ BroadIP);
+               inputIp_udpBroad = new JTextField(BroadIP,15);//í”„ë¡œê·¸ë¨ì´ ì‹¤í–‰ë˜ìë§ì IPë¥¼ ì½ì–´ë“¤ì—¬ Broadcast ì£¼ì†Œë¥¼ ì…ë ¥í•´ë‘”ë‹¤.
+               
+            }
        
         
         
-        // ¹öÆ°°ú ÅØ½ºÆ® ÇÊµå¸¦ ´ãÀ» ÆĞ³Î
+        // ë²„íŠ¼ê³¼ í…ìŠ¤íŠ¸ í•„ë“œë¥¼ ë‹´ì„ íŒ¨ë„
         JPanel buttonPanel_main = new JPanel(new FlowLayout());
         JPanel buttonPanel_1 = new JPanel(new FlowLayout());
         JPanel buttonPanel_2 = new JPanel(new FlowLayout());
@@ -130,7 +138,7 @@ public class GUI extends JFrame {
         JPanel buttonPanel_4 = new JPanel(new BorderLayout());
         JPanel buttonPanel_5 = new JPanel(new BorderLayout());
         JPanel buttonPanel_6 = new JPanel(new BorderLayout());
-        //»õ·Î¿î ¹öÆ°À» À§ÇÑ ÆĞ³Î ¼³Á¤
+        //ìƒˆë¡œìš´ ë²„íŠ¼ì„ ìœ„í•œ íŒ¨ë„ ì„¤ì •
         JPanel buttonSmallPanel = new JPanel(new BorderLayout());
         
         buttonPanel_1.add(new JLabel("Client1 IP:"));
@@ -143,87 +151,92 @@ public class GUI extends JFrame {
         buttonPanel_main.add(buttonPanel_2);
           
         buttonPanel_3.add(connection_Button);        
-        //buttonPanel_main.add(buttonPanel_3);
+        buttonPanel_main.add(buttonPanel_3);
         
         buttonPanel_4.add(connectionSetup_Button,BorderLayout.NORTH);
         buttonPanel_4.add(stopSetup_Button,BorderLayout.SOUTH);
-        buttonPanel_main.add(buttonPanel_4);
-        buttonPanel_5.add(sendButton_UDP,BorderLayout.NORTH);
-        buttonPanel_5.add(sendStopButton_UDP,BorderLayout.SOUTH);
-        //buttonPanel_5.add(receiveButton_UDP,BorderLayout.SOUTH);
+        //buttonPanel_main.add(buttonPanel_4);
+        //buttonPanel_5.add(sendButton_UDP,BorderLayout.NORTH);
+        //buttonPanel_5.add(sendStopButton_UDP,BorderLayout.SOUTH);
+        buttonPanel_5.add(receiveButton_UDP,BorderLayout.SOUTH);
         buttonPanel_main.add(buttonPanel_5);
                
         
-        buttonPanel_6.add(resetProgram);	
+        buttonPanel_6.add(resetProgram);   
         buttonPanel_main.add(buttonPanel_6);
         
 
-        // ¸ŞÀÎ ·¹ÀÌ¾Æ¿ô ¼³Á¤
+        // ë©”ì¸ ë ˆì´ì•„ì›ƒ ì„¤ì •
         setLayout(new BorderLayout());
 
-        // ¼ö½Å ¸Ş½ÃÁö + Clear ¹öÆ°À» À§ÇÑ ÆĞ³Î
+        // ìˆ˜ì‹  ë©”ì‹œì§€ + Clear ë²„íŠ¼ì„ ìœ„í•œ íŒ¨ë„
         JPanel receivedPanel = new JPanel(new BorderLayout());
         receivedPanel.add(receivedScrollPane, BorderLayout.CENTER);
         receivedPanel.add(clearReceiveButton, BorderLayout.SOUTH);
+        
+        // ì´ë¯¸ì§€ í‘œì‹œìš© íŒ¨ë„ ì¶”ê°€
+        JPanel imagePanel = new JPanel(new BorderLayout());
+        imagePanel.add(imageLabel, BorderLayout.CENTER);
 
-        // Àü¼Û ¸Ş½ÃÁö + Clear ¹öÆ°À» À§ÇÑ ÆĞ³Î
+        // ì „ì†¡ ë©”ì‹œì§€ + Clear ë²„íŠ¼ì„ ìœ„í•œ íŒ¨ë„
         JPanel sendPanel = new JPanel(new BorderLayout());
         sendPanel.add(sendScrollPane, BorderLayout.CENTER);
         sendPanel.add(clearSendButton, BorderLayout.SOUTH);
 
-        // Center Panel: ¸ğµç Ã¢À» µ¿ÀÏÇÑ Å©±â·Î ¼³Á¤ÇÏ±â À§ÇÑ GridLayout
-        JPanel centerPanel = new JPanel(new GridLayout(3, 1));  // 3 rows, 1 column
-        centerPanel.add(receivedPanel);  // ¼ö½Å ¸Ş½ÃÁö Ã¢ + Clear ¹öÆ°
-        centerPanel.add(sendPanel);      // Àü¼Û ¸Ş½ÃÁö Ã¢ + Clear ¹öÆ°
-        centerPanel.add(consoleScrollPane);   // ÄÜ¼Ö Ã¢
+        // Center Panel: ëª¨ë“  ì°½ì„ ë™ì¼í•œ í¬ê¸°ë¡œ ì„¤ì •í•˜ê¸° ìœ„í•œ GridLayout
+        JPanel centerPanel = new JPanel(new GridLayout(4, 1));  // 4 rows, 1 column
+        centerPanel.add(receivedPanel);  // ìˆ˜ì‹  ë©”ì‹œì§€ ì°½ + Clear ë²„íŠ¼
+        centerPanel.add(imagePanel);        // ì´ë¯¸ì§€ ì˜ì—­ ì¶”ê°€
+        centerPanel.add(sendPanel);      // ì „ì†¡ ë©”ì‹œì§€ ì°½ + Clear ë²„íŠ¼
+        centerPanel.add(consoleScrollPane);   // ì½˜ì†” ì°½
 
-        add(centerPanel, BorderLayout.CENTER);      // Áß¾Ó¿¡ 3°³ÀÇ Ã¢À» °°Àº Å©±â·Î ¹èÄ¡
-        add(buttonPanel_main, BorderLayout.SOUTH);        // ÇÏ´Ü¿¡ ¹öÆ° ÆĞ³Î ¹èÄ¡
+        add(centerPanel, BorderLayout.CENTER);      // ì¤‘ì•™ì— 3ê°œì˜ ì°½ì„ ê°™ì€ í¬ê¸°ë¡œ ë°°ì¹˜
+        add(buttonPanel_main, BorderLayout.SOUTH);        // í•˜ë‹¨ì— ë²„íŠ¼ íŒ¨ë„ ë°°ì¹˜
         
         
         
-        // ¿¬°á ¹öÆ° ÀÌº¥Æ® Ã³¸®
+        // ì—°ê²° ë²„íŠ¼ ì´ë²¤íŠ¸ ì²˜ë¦¬
         connection_Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                Main.ComSetupResponse();
             }
         });
-        //ÇØ´ç ¹öÆ°À» ´­·¯¾ß ¿¬°á¹öÆ°À» ÅëÇÑ ¼ÒÄÏ¿¬°áÀÌ °¡´ÉÇÔ 
+        //í•´ë‹¹ ë²„íŠ¼ì„ ëˆŒëŸ¬ì•¼ ì—°ê²°ë²„íŠ¼ì„ í†µí•œ ì†Œì¼“ì—°ê²°ì´ ê°€ëŠ¥í•¨ 
         
-     // TCP ¼ÒÄÏ¿¬°á ¹öÆ° ÀÌº¥Æ® Ã³¸®
+     // TCP ì†Œì¼“ì—°ê²° ë²„íŠ¼ ì´ë²¤íŠ¸ ì²˜ë¦¬
         connectionSetup_Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	Main.ComSetup();
-            	}
+               Main.ComSetup();
+               }
         });
-        //SETUP ÁßÁö ¹öÆ°
+        //SETUP ì¤‘ì§€ ë²„íŠ¼
         stopSetup_Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	Main.StopSetup();
+               Main.StopSetup();
             }
         });
 
         sendButton_UDP.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	Main.ComBroadcastSend();
+               Main.ComBroadcastSend();
   
             }
         });
-        // UDP Àü¼Û ÁßÁö ¹öÆ°
+        // UDP ì „ì†¡ ì¤‘ì§€ ë²„íŠ¼
         sendStopButton_UDP.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	Main.StopBroadcastSend();
+               Main.StopBroadcastSend();
             }
         });
         receiveButton_UDP.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	Main.ComReceive();
+               Main.ComReceive();
             }
         });
         
@@ -231,7 +244,7 @@ public class GUI extends JFrame {
         resetProgram.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	Main.ComReset();
+               Main.ComReset();
             }
         });
         
@@ -247,3 +260,4 @@ public class GUI extends JFrame {
         });
     }
 }
+
