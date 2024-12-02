@@ -4,9 +4,9 @@ import java.io.*;
 import java.net.Socket;
 
 public class TcpSocketConnection {
-    private static final int PORT = 8189;
+    private static final int PORT = 49152;
     private Socket socket;
-    private TCPSend client; // SenderViewModel ÀÎ½ºÅÏ½º
+    private TCPSend client; // SenderViewModel ï¿½Î½ï¿½ï¿½Ï½ï¿½
     
 
     
@@ -18,53 +18,47 @@ public class TcpSocketConnection {
             
             System.out.println("Server: " + serverIP + " is connected by TCP");
             System.out.println("My IP: " + socket.getLocalAddress());
-
+            
+            
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
  
-    // TCP ¿¡ÄÚ ¸Þ½ÃÁö¸¦ Àü¼ÛÇÏ´Â ¸Þ¼­µå
+    // TCP ï¿½ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
     public void sendAckMessage(String message) {
         if (client != null) {
-            client.sendMessage_tcp(message); // Client_TcpÀ» »ç¿ëÇÏ¿© ¸Þ½ÃÁö Àü¼Û
+            client.sendMessage_tcp(message); // Client_Tcpï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         } else {
-        	System.out.println("TCPSender is null");
+            System.out.println("SenderViewModelï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½.");
         }
     }
-    //byte¹è¿­ÀÇ TCP check ¸Þ½ÃÁö¸¦ Àü¼ÛÇÏ´Â ¸Þ¼­µå
+    //byteï¿½è¿­ï¿½ï¿½ TCP check ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
     public void sendAckMessage(byte[] message) {
         if (client != null) {
-            client.sendMessage_tcp(message); // Client_TcpÀ» »ç¿ëÇÏ¿© ¸Þ½ÃÁö Àü¼Û
+            client.sendMessage_tcp(message); // Client_Tcpï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         } else {
-        	System.out.println("TCPSender is null");
+            System.out.println("SenderViewModelï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½.");
         }
     }
     
-    //byte¹è¿­ÀÇ TCP check ¸Þ½ÃÁö¸¦ Àü¼ÛÇÏ´Â ¸Þ¼­µå
+    //byteï¿½è¿­ï¿½ï¿½ TCP check ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
     public void sendAckMessage_alltrue(boolean message) {
         if (client != null) {
-            client.sendMessage_tcp_alltrue(message); // Client_TcpÀ» »ç¿ëÇÏ¿© ¸Þ½ÃÁö Àü¼Û
+            client.sendMessage_tcp_alltrue(message); // Client_Tcpï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         } else {
-        	System.out.println("TCPSender is null");
-        }
-    }
-    public void sendAckObject(byte[] byteArray) {
-    	if (client != null) {
-            client.sendAckObject(byteArray);
-        } else {
-            System.out.println("TCPSender is null");
+            System.out.println("SenderViewModelï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½.");
         }
     }
     
     
-    
-    // ¼ÒÄÏ Á¾·á ¸Þ¼­µå Ãß°¡
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
     public void closeSocket() {
         try {
             if (socket != null && !socket.isClosed()) {
                 socket.close();
-                System.out.println("TCP ¼ÒÄÏÀÌ ´ÝÇû½À´Ï´Ù.");
+                System.out.println("TCP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -13,7 +13,7 @@ public class TCPSend {
     private DataOutputStream dataOutputStream = null;
     private BufferedReader in = null; // 수신용 BufferedReader 추가
     private DataInputStream dataInputStream = null; // 바이트 수신용 DataInputStream 추가
-    private ObjectOutputStream objectOutputStream = null;
+    
     // Socket을 파라미터로 받는 생성자
     public TCPSend(Socket socket) {
         this.socket = socket;
@@ -22,8 +22,7 @@ public class TCPSend {
             out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
             // byteArray를 위해 추가함
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            //Ack객체 수신을 위해 추가
-            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            
             /*Reset을 위한 tcp 수신*/
             // 수신 스트림 초기화
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -92,22 +91,6 @@ public class TCPSend {
             e.printStackTrace();
         }
     }
-    
-public void sendAckObject(byte[] byteArray) {
-	try {
-            
-			//Ack객체 생성
-        	Ack ack = new Ack(byteArray);
-        
-           // Ack 객체 전송
-           objectOutputStream.writeObject(ack);
-           System.out.println("Ack object sent.");
-
-       } catch (Exception e) {
-           e.printStackTrace();
-       }
-		
-	}
 
 
 
@@ -137,7 +120,7 @@ public void sendAckObject(byte[] byteArray) {
                 System.out.println("Server closed the connection.");
                 //Message num 초기화
                 UDPReceive.receivedMessageNum =1;
-                UDPReceive.closeUDPbyReset();
+                Main.receiver_udp.resetUDPreceiving();
                 Main.receiver_udp = null;
             } catch (IOException e) {
                 System.out.println("Connection closed.");
@@ -145,6 +128,4 @@ public void sendAckObject(byte[] byteArray) {
         });
         receiveResetThread.start();
     }
-
-	
 }
